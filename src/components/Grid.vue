@@ -16,17 +16,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="entry in filteredData" :key="entry">
-        <td v-for="key in columns" :key="key">
-          {{ entry[key] }}
-        </td>
-        <td>
-          <button class="btn" id="update">Update</button>
-        </td>
-        <td>
-          <button class="btn" id="delete">Delete</button>
-        </td>
-      </tr>
+        <Row v-for="(entry, i) in filteredData" :key="i" :columns="columns" :item="entry"></Row>
       </tbody>
     </table>
     <p v-else>No matches found.</p>
@@ -34,8 +24,13 @@
 </template>
 
 <script>
+import Row from "./Row.vue";
+
 export default {
   name: 'DemoGrid',
+  components: {
+    Row
+  },
   props: {
     data: Array,
     columns: Array,
