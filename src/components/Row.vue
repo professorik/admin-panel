@@ -21,10 +21,10 @@ export default {
   },
   methods: {
     deleteProd: function () {
-      console.log("deleted", this.item)
+      this.$emit('deleteprod', this.item);
     },
     update: function () {
-      console.log("update", this.item)
+      this.$emit('updateprod', this.item);
     },
   },
 }

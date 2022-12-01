@@ -1,9 +1,13 @@
 <template>
   <div id="app">
     <PopupEdit :show="showModal" :prod="prod" v-on:closemodal="closeModal" @keyup.enter="closeModal"></PopupEdit>
-    <DemoGrid :data="gridData"
-              :columns="gridColumns"
-              :filter-key="searchQuery"/>
+    <DemoGrid
+        :data="gridData"
+        :columns="gridColumns"
+        :filter-key="searchQuery"
+        v-on:updateprod="updateProduct"
+        v-on:deleteprod="deleteProduct"
+    />
     <br/>
     <button class="btn" id="create" v-on:click="showCreate">Create</button>
   </div>
@@ -23,7 +27,6 @@ export default {
   },
   data: function () {
     return {
-      message: 'Welcome to Vue.js',
       products: [],
       showModal: false,
       prod: {
@@ -33,10 +36,10 @@ export default {
       searchQuery: '',
       gridColumns: ['id', 'group_id', 'product_name', 'description'],
       gridData: [
-        {id: 'Chuck Norris', group_id: Infinity, product_name: 'kar', description: 'far'},
-        {id: 'Bruce Lee', group_id: 9000, product_name: 'kar', description: 'far'},
-        {id: 'Jackie Chan', group_id: 7000, product_name: 'kar', description: 'far'},
-        {id: 'Jet Li', group_id: 8000, product_name: 'kar', description: 'far'}
+        {id: 'Chuck Norris', group_id: Infinity, product_name: 'kar1', description: 'far1'},
+        {id: 'Bruce Lee', group_id: 9000, product_name: 'kar2', description: 'far2'},
+        {id: 'Jackie Chan', group_id: 7000, product_name: 'kar3', description: 'far3'},
+        {id: 'Jet Li', group_id: 8000, product_name: 'kar4', description: 'far4'}
       ]
     };
   },
@@ -62,6 +65,9 @@ export default {
     updateProduct: function (p) {
       this.prod = p;
       this.showModal = true;
+    },
+    deleteProduct: function (p) {
+      console.log("deleted", p)
     }
   }
 }

@@ -3,7 +3,7 @@
     <div class="b-popup-content">
       <button id="close" v-on:click="exit"> X </button>
       <h2> Edit product </h2>
-      <label> Product Name <input type="text" v-model="prod.productName" /></label><br><br>
+      <label> Product Name <input type="text" v-model="prod.product_name" /></label><br><br>
       <label> Description <textarea v-model="prod.description" /></label>
       <div class="buttons">
         <button class="btn" id="create" v-on:click="update"> Save </button>
@@ -22,7 +22,7 @@ export default {
   },
   data: function(){
     return {
-      productName: '',
+      product_name: '',
       description: '',
     }
   },

@@ -16,7 +16,12 @@
       </tr>
       </thead>
       <tbody>
-        <Row v-for="(entry, i) in filteredData" :key="i" :columns="columns" :item="entry"></Row>
+        <Row v-for="(entry, i) in filteredData" :key="i"
+             :columns="columns"
+             :item="entry"
+             v-on:updateprod="update"
+             v-on:deleteprod="deleteProd"
+        />
       </tbody>
     </table>
     <p v-else>No matches found.</p>
@@ -67,11 +72,11 @@ export default {
     }
   },
   methods: {
-    deleteProd: function () {
-      // TODO: delete item
+    deleteProd: function (item) {
+      this.$emit('deleteprod', item);
     },
-    update: function () {
-      this.$emit('updateprod', this.product);
+    update: function (item) {
+      this.$emit('updateprod', item);
     },
     sortBy(key) {
       this.sortKey = key
@@ -84,36 +89,29 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 table {
   border: 2px solid #42b983;
   border-radius: 3px;
   background-color: #fff;
 }
-
 th {
   background-color: #42b983;
   color: rgba(255, 255, 255, 0.66);
   cursor: pointer;
   user-select: none;
 }
-
 td {
   background-color: #f9f9f9;
 }
-
 th,
 td {
   min-width: 120px;
   padding: 10px 20px;
 }
-
 th.active {
   color: #fff;
 }
-
 th.active .arrow {
   opacity: 1;
 }
@@ -126,13 +124,11 @@ th.active .arrow {
   margin-left: 5px;
   opacity: 0.66;
 }
-
 .arrow.asc {
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
   border-bottom: 4px solid #fff;
 }
-
 .arrow.dsc {
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
