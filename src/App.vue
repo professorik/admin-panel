@@ -1,6 +1,13 @@
 <template>
   <div id="app">
-    <PopupEdit :show="showModal" :prod="prod" v-on:closemodal="closeModal" @keyup.enter="closeModal"></PopupEdit>
+    <PopupEdit
+        :show="showModal"
+        :prod="prod"
+        :title="title"
+        :groups="shit"
+        v-on:closemodal="closeModal"
+        @keyup.enter="closeModal"
+    />
     <DemoGrid
         :data="gridData"
         :columns="gridColumns"
@@ -29,17 +36,25 @@ export default {
     return {
       products: [],
       showModal: false,
+      title: 'Edit',
       prod: {
-        productName: '',
+        product_name: '',
         description: ''
       },
       searchQuery: '',
-      gridColumns: ['id', 'group_id', 'product_name', 'description'],
+      gridColumns: ['id', 'group_name', 'product_name', 'description'],
       gridData: [
-        {id: 'Chuck Norris', group_id: Infinity, product_name: 'kar1', description: 'far1'},
-        {id: 'Bruce Lee', group_id: 9000, product_name: 'kar2', description: 'far2'},
-        {id: 'Jackie Chan', group_id: 7000, product_name: 'kar3', description: 'far3'},
-        {id: 'Jet Li', group_id: 8000, product_name: 'kar4', description: 'far4'}
+        {id: 'Chuck Norris', group_name: Infinity, product_name: 'kar1', description: 'far1'},
+        {id: 'Bruce Lee', group_name: 9000, product_name: 'kar2', description: 'far2'},
+        {id: 'Jackie Chan', group_name: 7000, product_name: 'kar3', description: 'far3'},
+        {id: 'Jet Li', group_name: 8000, product_name: 'kar4', description: 'far4'}
+      ],
+      shit: [
+        {name: "hello", id: 1},
+        {name: "my", id: 2},
+        {name: "name", id: 3},
+        {name: "is", id: 4},
+        {name: "Slim Shady", id: 5}
       ]
     };
   },
@@ -58,15 +73,20 @@ export default {
     showCreate: function () {
       this.showModal = true;
       this.prod = {
-        productName: '',
+        product_name: '',
         description: ''
       }
+      this.title = 'Create'
     },
     updateProduct: function (p) {
       this.prod = p;
       this.showModal = true;
+      this.title = 'Edit'
     },
     deleteProduct: function (p) {
+      const i = this.gridData.indexOf(p)
+      if (i > -1)
+        this.gridData.splice(i, 1)
       console.log("deleted", p)
     }
   }
@@ -118,5 +138,10 @@ body{
 #update:hover {
   background-color: white;
   color: #4256b9;
+}
+#create:disabled {
+  background-color: #3b3b3b;
+  border: 2px solid #3b3b3b;
+  color: gray;
 }
 </style>
