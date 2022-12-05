@@ -4,14 +4,14 @@
         :show="showModal"
         :prod="prod"
         :isCreate="isCreate"
-        :groups="shit"
+        :groups="groups"
         v-on:closemodal="closeModal"
         v-on:updateprod="updateProduct"
         v-on:createprod="createProduct"
         @keyup.enter="closeModal"
     />
     <Grid
-        :data="gridData"
+        :data="products"
         :columns="gridColumns"
         :filter-key="searchQuery"
         title="Products"
@@ -27,6 +27,7 @@
 import Grid from './components/Grid.vue'
 import PopupEdit from './components/PopupEdit.vue'
 import Vue from "vue";
+import * as api from './api.js'
 
 export default {
   name: 'app',
@@ -45,29 +46,14 @@ export default {
       },
       searchQuery: '',
       gridColumns: ['id', 'group_name', 'product_name', 'description'],
-      gridData: [],
-      shit: []
+      groups: []
     };
   },
   created() {
-    const groupId = 3;
-    /*const prods = getProducts(groupId).then(r => {
-      this.products = r;
-      console.log('products', r)
-    });*/
-    this.gridData = [
-      {id: 'Chuck Norris', group_name: Infinity, product_name: 'kar1', description: 'far1'},
-      {id: 'Bruce Lee', group_name: 9000, product_name: 'kar2', description: 'far2'},
-      {id: 'Jackie Chan', group_name: 7000, product_name: 'kar3', description: 'far3'},
-      {id: 'Jet Li', group_name: 8000, product_name: 'kar4', description: 'far4'}
-    ]
-    this.shit = [
-      {name: "hello", id: 1},
-      {name: "my", id: 2},
-      {name: "name", id: 3},
-      {name: "is", id: 4},
-      {name: "writable", id: 5}
-    ]
+    api.getGroups().then(r => {
+      this.groups = r
+      api.getProducts(this.groups).then(r => this.products = r)
+    })
   },
   methods: {
     closeModal: function () {
@@ -87,22 +73,40 @@ export default {
       this.isCreate = false
     },
     createProduct: function (p) {
+      /*api.postProduct(p).then(() => {
+        api.getGroups().then(r => {
+          this.groups = r
+          api.getProducts(this.groups).then(r => this.products = r)
+        })
+      })*/
       const crypto = require('crypto')
-      p.group_name = this.shit[p.groupId].name
+      p.group_name = this.groups[p.groupId].name
       p.id = crypto.createHash('sha1').update(p.groupId + p.name + p.description).digest('hex')
-      this.gridData.push(p)
+      this.products.push(p)
     },
     updateProduct: function (p) {
-      for (let i = 0; i < this.gridData.length; i++) {
-        if (this.gridData[i].id === p.id) {
-          Vue.set(this.gridData, i, p)
+      /*api.patchProduct(p).then(() => {
+        api.getGroups().then(r => {
+          this.groups = r
+          api.getProducts(this.groups).then(r => this.products = r)
+        })
+      })*/
+      for (let i = 0; i < this.products.length; i++) {
+        if (this.products[i].id === p.id) {
+          Vue.set(this.products, i, p)
         }
       }
     },
     deleteProduct: function (p) {
-      const i = this.gridData.indexOf(p)
+      /*api.deleteProduct(p).then(() => {
+        api.getGroups().then(r => {
+          this.groups = r
+          api.getProducts(this.groups).then(r => this.products = r)
+        })
+      })*/
+      const i = this.products.indexOf(p)
       if (i > -1)
-        this.gridData.splice(i, 1)
+        this.products.splice(i, 1)
     }
   }
 }
