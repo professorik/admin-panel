@@ -2,18 +2,18 @@
   <div class="b-popup" v-show="show">
     <div class="b-popup-content">
       <button id="close" v-on:click="exit"> X</button>
-      <h2> {{ title }} product </h2>
+      <h2> {{ isCreate? 'Create': 'Edit' }} product </h2>
 
       <label class="label">Product Name</label><br/>
-      <input name="name" v-model="prod.product_name" class="input" type="text"
+      <input name="name" v-model="prodCopy.product_name" class="input" type="text"
              placeholder="Product Name" v-bind:class="{error: isNameInvalid}" />
 
       <label class="label">Description</label><br/>
-      <textarea class="textarea" placeholder="Textarea" v-model="prod.description"
+      <textarea class="textarea" placeholder="Textarea" v-model="prodCopy.description"
                 v-bind:class="{error: isDescInvalid}"/>
 
       <label class="label">Group</label>
-      <select v-model="prod.groupId" v-bind:class="{error: isGroupInvalid}">
+      <select v-model="prodCopy.groupId" v-bind:class="{error: isGroupInvalid}">
         <option disabled value="">Nothing selected</option>
         <option v-for="option in groups" v-bind:value="option.id">
           {{ option.name }}
@@ -29,13 +29,24 @@
 </template>
 
 <script>
+
 export default {
   name: 'PopupEdit',
   props: {
-    title: String,
+    isCreate: Boolean,
     groups: Array,
     show: Boolean,
-    prod: Object
+    prod: Object,
+  },
+  watch: {
+    prod(newValue) {
+      this.prodCopy = Object.assign({}, newValue)
+    }
+  },
+  data() {
+    return {
+      prodCopy: this.prod,
+    }
   },
   created() {
     let tmp = this
@@ -47,26 +58,26 @@ export default {
   },
   computed: {
     isNameInvalid() {
-      return this.prod.product_name.length < 3
+      return this.prodCopy.product_name.length < 3
     },
     isDescInvalid() {
-      return this.prod.description.length < 3
+      return this.prodCopy.description.length < 3
     },
     isGroupInvalid() {
-      return !this.prod.groupId
+      return !this.prodCopy.groupId
     }
   },
   methods: {
     update: function () {
-      if (!this.prod.id) {  // if there is no Id, we create a new prod
-        this.prod.groupId = 3;
-        //postProduct(this.prod);
-      } else {              // otherwise we update existing one
-        // TODO: updateProd(this.prod);
+      if (this.isCreate) {
+        this.$emit('createprod', this.prodCopy);
+      } else {
+        this.$emit('updateprod', this.prodCopy);
       }
       this.exit();
     },
     exit: function () {
+      this.prodCopy = Object.assign({}, this.prod)
       this.$emit('closemodal');
     }
   },

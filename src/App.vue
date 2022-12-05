@@ -3,16 +3,19 @@
     <PopupEdit
         :show="showModal"
         :prod="prod"
-        :title="title"
+        :isCreate="isCreate"
         :groups="shit"
         v-on:closemodal="closeModal"
+        v-on:updateprod="updateProduct"
+        v-on:createprod="createProduct"
         @keyup.enter="closeModal"
     />
-    <DemoGrid
+    <Grid
         :data="gridData"
         :columns="gridColumns"
         :filter-key="searchQuery"
-        v-on:updateprod="updateProduct"
+        title="Products"
+        v-on:updateprod="updateProductPopup"
         v-on:deleteprod="deleteProduct"
     />
     <br/>
@@ -21,41 +24,29 @@
 </template>
 
 <script>
-import DemoGrid from './components/Grid.vue'
+import Grid from './components/Grid.vue'
 import PopupEdit from './components/PopupEdit.vue'
-import PersonEdit from './components/PersonEdit.vue'
+import Vue from "vue";
 
 export default {
   name: 'app',
   components: {
-    DemoGrid,
-    PopupEdit,
-    PersonEdit
+    Grid,
+    PopupEdit
   },
   data: function () {
     return {
       products: [],
       showModal: false,
-      title: 'Edit',
+      isCreate: false,
       prod: {
         product_name: '',
         description: ''
       },
       searchQuery: '',
       gridColumns: ['id', 'group_name', 'product_name', 'description'],
-      gridData: [
-        {id: 'Chuck Norris', group_name: Infinity, product_name: 'kar1', description: 'far1'},
-        {id: 'Bruce Lee', group_name: 9000, product_name: 'kar2', description: 'far2'},
-        {id: 'Jackie Chan', group_name: 7000, product_name: 'kar3', description: 'far3'},
-        {id: 'Jet Li', group_name: 8000, product_name: 'kar4', description: 'far4'}
-      ],
-      shit: [
-        {name: "hello", id: 1},
-        {name: "my", id: 2},
-        {name: "name", id: 3},
-        {name: "is", id: 4},
-        {name: "Slim Shady", id: 5}
-      ]
+      gridData: [],
+      shit: []
     };
   },
   created() {
@@ -64,7 +55,19 @@ export default {
       this.products = r;
       console.log('products', r)
     });*/
-    this.prods = []
+    this.gridData = [
+      {id: 'Chuck Norris', group_name: Infinity, product_name: 'kar1', description: 'far1'},
+      {id: 'Bruce Lee', group_name: 9000, product_name: 'kar2', description: 'far2'},
+      {id: 'Jackie Chan', group_name: 7000, product_name: 'kar3', description: 'far3'},
+      {id: 'Jet Li', group_name: 8000, product_name: 'kar4', description: 'far4'}
+    ]
+    this.shit = [
+      {name: "hello", id: 1},
+      {name: "my", id: 2},
+      {name: "name", id: 3},
+      {name: "is", id: 4},
+      {name: "writable", id: 5}
+    ]
   },
   methods: {
     closeModal: function () {
@@ -76,18 +79,30 @@ export default {
         product_name: '',
         description: ''
       }
-      this.title = 'Create'
+      this.isCreate = true
     },
-    updateProduct: function (p) {
+    updateProductPopup: function (p) {
       this.prod = p;
       this.showModal = true;
-      this.title = 'Edit'
+      this.isCreate = false
+    },
+    createProduct: function (p) {
+      const crypto = require('crypto')
+      p.group_name = this.shit[p.groupId].name
+      p.id = crypto.createHash('sha1').update(p.groupId + p.name + p.description).digest('hex')
+      this.gridData.push(p)
+    },
+    updateProduct: function (p) {
+      for (let i = 0; i < this.gridData.length; i++) {
+        if (this.gridData[i].id === p.id) {
+          Vue.set(this.gridData, i, p)
+        }
+      }
     },
     deleteProduct: function (p) {
       const i = this.gridData.indexOf(p)
       if (i > -1)
         this.gridData.splice(i, 1)
-      console.log("deleted", p)
     }
   }
 }

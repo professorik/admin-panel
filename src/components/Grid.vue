@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>{{ title }}</h1>
     <table v-if="filteredData.length">
       <thead>
       <tr>
@@ -37,6 +38,7 @@ export default {
     Row
   },
   props: {
+    title: String,
     data: Array,
     columns: Array,
     filterKey: String,
