@@ -135,7 +135,10 @@ export default {
     },
     updateGroup: function (g) {
       api.putGroup(g).then(() => {
-        api.getGroups().then(r => this.groups = r)
+        api.getGroups().then(r => {
+          this.groups = r
+          api.getProducts(this.groups).then(r => this.products = r)
+        })
       })
     },
     deleteGroup: function (g) {
