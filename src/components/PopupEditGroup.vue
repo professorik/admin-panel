@@ -2,26 +2,14 @@
   <div class="b-popup" v-show="show">
     <div class="b-popup-content">
       <button id="close" v-on:click="exit"> X</button>
-      <h2> {{ isCreate? 'Create': 'Edit' }} product </h2>
+      <h2> {{ isCreate? 'Create': 'Edit' }} group </h2>
 
-      <label class="label">Product Name</label><br/>
-      <input name="name" v-model="prodCopy.product_name" class="input" type="text"
+      <label class="label">Group Name</label><br/>
+      <input name="name" v-model="groupCopy.name" class="input" type="text"
              placeholder="Product Name" v-bind:class="{error: isNameInvalid}" />
 
-      <label class="label">Description</label><br/>
-      <textarea class="textarea" placeholder="Textarea" v-model="prodCopy.description"
-                v-bind:class="{error: isDescInvalid}"/>
-
-      <label class="label">Group</label>
-      <select v-model="prodCopy.groupId" v-bind:class="{error: isGroupInvalid}">
-        <option disabled value="">Nothing selected</option>
-        <option v-for="option in groups" v-bind:value="option.id">
-          {{ option.name }}
-        </option>
-      </select>
-
       <div class="buttons">
-        <button class="btn" id="create" v-on:click="update" :disabled="isGroupInvalid||isNameInvalid||isDescInvalid"> Save</button>
+        <button class="btn" id="create-group" v-on:click="update" :disabled="isNameInvalid"> Save</button>
         <button class="btn" id="delete" v-on:click="exit"> Exit</button>
       </div>
     </div>
@@ -34,18 +22,17 @@ export default {
   name: 'PopupEdit',
   props: {
     isCreate: Boolean,
-    groups: Array,
     show: Boolean,
-    prod: Object,
+    group: Object,
   },
   watch: {
-    prod(newValue) {
-      this.prodCopy = Object.assign({}, newValue)
+    group(newValue) {
+      this.groupCopy = Object.assign({}, newValue)
     }
   },
   data() {
     return {
-      prodCopy: this.prod,
+      groupCopy: this.group,
     }
   },
   created() {
@@ -58,26 +45,20 @@ export default {
   },
   computed: {
     isNameInvalid() {
-      return this.prodCopy.product_name.length < 3
+      return this.groupCopy.name.length < 3
     },
-    isDescInvalid() {
-      return this.prodCopy.description.length < 3
-    },
-    isGroupInvalid() {
-      return !this.prodCopy.groupId
-    }
   },
   methods: {
     update: function () {
       if (this.isCreate) {
-        this.$emit('createprod', this.prodCopy);
+        this.$emit('creategroup', this.groupCopy);
       } else {
-        this.$emit('updateprod', this.prodCopy);
+        this.$emit('updategroup', this.groupCopy);
       }
       this.exit();
     },
     exit: function () {
-      this.prodCopy = Object.assign({}, this.prod)
+      this.groupCopy = Object.assign({}, this.group)
       this.$emit('closemodal');
     }
   },
