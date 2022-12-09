@@ -151,6 +151,7 @@ export default {
       const i = this.groups.indexOf(g)
       if (i > -1)
         this.groups.splice(i, 1)
+      this.products = this.products.filter(p => p.groupId !== g.id)
     }
   }
 }
